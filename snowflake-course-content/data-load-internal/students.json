@@ -1,0 +1,5 @@
+{"student":{"ID":1,"Name":"Jill","Age":25},"location":[{"name":"MI","active":"Y","region":"N"},{"name":"TX","active":"N","region":"S"}],"courses":["Math","Science","English","History"]}
+{"student":{"ID":2,"Name":"Mark","Age":21},"location":[{"name":"TX","active":"Y","region":"S"}],"courses":["English","History"]}
+{"student":{"ID":3,"Name":"Tim","Age":18},"location":[{"name":"TX","active":"Y","region":"S"},{"name":"FL","active":"N","region":"S"},{"name":"AR","active":"N","region":"S"}],"courses":["Math"]}
+{"student":{"ID":4,"Name":"Jane","Age":20},"location":[{"name":"CA","active":"N","region":"W"},{"name":"FL","active":"Y","region":"S"}],"courses":["English"]}
+{"student":{"ID":7,"Name":"Anne","Age":21},"location":[{"name":"CA","active":"Y","region":"W"}],"courses":["Math","English","History"]}
