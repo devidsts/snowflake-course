@@ -63,7 +63,7 @@ create or replace FILE FORMAT CITIBIKE_PIPELINES.PUBLIC.CSV
 
 alter warehouse DATAPIPELINES_WH set WAREHOUSE_SIZE = 'LARGE';
 copy into trips from @citibike_trips file_format=CSV pattern = '.*.*[.]csv[.]gz';
-alter warehouse DATAPIPELINES_WH set WAREHOUSE_SIZE = 'XSMALL';
+alter warehouse DATAPIPELINES_WH set WAREHOUSE_SIZE = 'MEDIUM';
 
 --Run from Cold
 
@@ -143,8 +143,7 @@ ALTER WAREHOUSE MULTICLUSTER_WH SCALING_POLICY = 'ECONOMY'  -- Economy policy
 
 -- Assign Resource Monitor on Warehouse
 create or replace resource monitor limiter with credit_quota=5000
-  notify_users = (jdoe, "jane smith", "john doe")
-  triggers on 75 percent do notify
+      triggers on 75 percent do notify
            on 100 percent do suspend
            on 110 percent do suspend_immediate;
 
@@ -155,3 +154,4 @@ USE WAREHOUSE COMPUTE_WH;
 
 -- Clean resources
 DROP WAREHOUSE MULTICLUSTER_WH;
+alter warehouse DATAPIPELINES_WH set WAREHOUSE_SIZE = 'XSMALL';
