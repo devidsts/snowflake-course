@@ -16,49 +16,55 @@ USE WAREHOUSE DATAPIPELINES_WH;
 
 
 -- Create the table for Trips
-CREATE OR REPLACE TABLE TRIPS
-(tripduration integer,
-  starttime timestamp,
-  stoptime timestamp,
-  start_station_id integer,
-  start_station_name string,
-  start_station_latitude float,
-  start_station_longitude float,
-  end_station_id integer,
-  end_station_name string,
-  end_station_latitude float,
-  end_station_longitude float,
-  bikeid integer,
-  membership_type string,
-  usertype string,
-  birth_year integer,
-  gender integer);
+CREATE OR REPLACE TABLE trips
+(
+    tripduration              INTEGER,
+    starttime                 TIMESTAMP,
+    stoptime                  TIMESTAMP,
+    start_station_id          INTEGER,
+    start_station_name        STRING,
+    start_station_latitude    FLOAT,
+    start_station_longitude   FLOAT,
+    end_station_id            INTEGER,
+    end_station_name          STRING,
+    end_station_latitude      FLOAT,
+    end_station_longitude     FLOAT,
+    bikeid                    INTEGER,
+    membership_type           STRING,
+    usertype                  STRING,
+    birth_year                INTEGER,
+    gender                    INTEGER
+);
+
 
 
 -- Create the stage with the S3 bucket
-CREATE or replace STAGE CITIBIKE_PIPELINES.PUBLIC.citibike_trips URL = 's3://snowflake-workshop-lab/citibike-trips-csv/';
+CREATE OR REPLACE STAGE citibike_trips
+    URL = 's3://snowflake-workshop-lab/japan/citibike-trips';
 
-list @citibike_trips;
+LIST @citibike_trips;
 
 
--- Define the file format
-create or replace FILE FORMAT CITIBIKE_PIPELINES.PUBLIC.CSV 
-    COMPRESSION = 'AUTO' 
-    FIELD_DELIMITER = ',' 
-    RECORD_DELIMITER = '\n' 
-    SKIP_HEADER = 0 
-    FIELD_OPTIONALLY_ENCLOSED_BY = '\042' 
-    TRIM_SPACE = FALSE 
-    ERROR_ON_COLUMN_COUNT_MISMATCH = TRUE 
-    ESCAPE = 'NONE' 
-    ESCAPE_UNENCLOSED_FIELD = '\134' 
-    DATE_FORMAT = 'AUTO' 
-    TIMESTAMP_FORMAT = 'AUTO' 
-    NULL_IF = ('');
- 
+CREATE OR REPLACE FILE FORMAT csv
+    TYPE                           = CSV
+    FIELD_DELIMITER                = ','
+    FIELD_OPTIONALLY_ENCLOSED_BY   = '"'
+    ERROR_ON_COLUMN_COUNT_MISMATCH = FALSE
+    EMPTY_FIELD_AS_NULL            = TRUE
+    SKIP_HEADER                    = 1
+    NULL_IF                        = ('');
+
+-- 7b. Reset the table and its load history, then reload
+TRUNCATE TABLE trips;
 
 alter warehouse DATAPIPELINES_WH set WAREHOUSE_SIZE = 'LARGE';
-copy into trips from @citibike_trips file_format=CSV pattern = '.*.*[.]csv[.]gz';
+
+COPY INTO trips
+FROM @citibike_trips
+FILE_FORMAT = csv
+ON_ERROR    = CONTINUE
+PATTERN     = '.*[.]csv.gz';
+
 alter warehouse DATAPIPELINES_WH set WAREHOUSE_SIZE = 'XSMALL';
 
 -- Check we got the trips information-- Check if the trips table is loaded with data
